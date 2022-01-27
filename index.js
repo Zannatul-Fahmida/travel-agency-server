@@ -27,8 +27,16 @@ async function run() {
         res.json(blogs);
       });
 
+        // GET Single Blog
+        app.get('/blogs/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const blog = await blogsCollection.findOne(query);
+            res.json(blog);
+        })
+
       //add blogs in database
-      app.post('/blogs', async (req, res) => {
+      app.post('/addBlogs', async (req, res) => {
         const blog = req.body;
         const result = await blogsCollection.insertOne(blog);
         res.json(result);
