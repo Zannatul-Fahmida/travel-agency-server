@@ -18,7 +18,22 @@ async function run() {
     await client.connect();
     const database = client.db('travel_agency');
     const usersCollection = database.collection('users');
+    const blogsCollection = database.collection('blogs');
     
+    // GET Blogs API
+    app.get('/blogs', async (req, res) => {
+        const cursor = blogsCollection.find({});
+        const blogs = await cursor.toArray();
+        res.json(blogs);
+      });
+
+      //add blogs in database
+      app.post('/blogs', async (req, res) => {
+        const blog = req.body;
+        const result = await blogsCollection.insertOne(blog);
+        res.json(result);
+      })
+
     // GET Users API
     app.get('/users', async (req, res) => {
         const cursor = usersCollection.find({});
@@ -72,7 +87,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-  res.send('Hello Toy store!')
+  res.send('Hello travel agency!')
 })
 
 app.listen(port, () => {
