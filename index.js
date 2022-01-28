@@ -19,6 +19,7 @@ async function run() {
     const database = client.db('travel_agency');
     const usersCollection = database.collection('users');
     const blogsCollection = database.collection('blogs');
+    const articlesCollection = database.collection('articles');
     
     // GET Blogs API
     app.get('/blogs', async (req, res) => {
@@ -41,6 +42,28 @@ async function run() {
         const result = await blogsCollection.insertOne(blog);
         res.json(result);
       })
+
+      // GET Articles API
+      app.get('/articles', async (req, res) => {
+          const cursor = articlesCollection.find({});
+          const articles = await cursor.toArray();
+          res.json(articles);
+        });
+
+        // GET Single Article
+        app.get('/articles/:id', async (req, res) => {
+          const id = req.params.id;
+          const query = { _id: ObjectId(id) };
+          const article = await articlesCollection.findOne(query);
+          res.json(article);
+      })
+
+        //add articles in database
+        app.post('/addArticles', async (req, res) => {
+          const article = req.body;
+          const result = await articlesCollection.insertOne(article);
+          res.json(result);
+        })
 
     // GET Users API
     app.get('/users', async (req, res) => {
